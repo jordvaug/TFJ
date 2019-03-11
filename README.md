@@ -1,2 +1,2 @@
 #TFJ
-Simple React App
+Simple MERN app
