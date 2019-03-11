@@ -33,7 +33,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB);
 
 //*****************************************************************/
-//Routes
+//Routes (api)
 app.use("/api", apiRouter);
 
 //used for heroku
