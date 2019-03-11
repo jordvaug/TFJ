@@ -11,6 +11,9 @@ var path = require("path"),
   apiRouter = require("./routes/api"),
   cors = require("cors");
 
+//changes for heroku
+app.use(express.static(path.join(__dirname, "client", "build")));
+
 //used to log all requests to the console
 app.use(morgan("dev"));
 
@@ -32,6 +35,11 @@ mongoose.connect(process.env.DB);
 //*****************************************************************/
 //Routes
 app.use("/api", apiRouter);
+
+//used for heroku
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 app.listen(config.port, () => {
   console.log(`Server running on port ${config.port}`);
