@@ -12,7 +12,7 @@ var path = require("path"),
   cors = require("cors");
 
 //changes for heroku
-app.use(express.static(path.join(__dirname, "client", "public")));
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 //used to log all requests to the console
 app.use(morgan("dev"));
@@ -38,7 +38,7 @@ app.use("/api", apiRouter);
 
 //used for heroku
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client/public", "index.html"));
+  res.sendFile(path.resolve(__dirname, "client/build", "index.html"));
 });
 
 app.listen(config.port, () => {
