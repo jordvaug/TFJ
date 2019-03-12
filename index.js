@@ -12,7 +12,7 @@ var path = require("path"),
   cors = require("cors");
 
 //changes for heroku
-app.use(express.static(path.join(__dirname, "client", "build")));
+app.use(express.static(path.join(__dirname, "client", "public")));
 
 //used to log all requests to the console
 app.use(morgan("dev"));
