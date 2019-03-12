@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "mern stack app for climbers",
   "private": true,
+  "hompage": ".",
   "proxy": "http://localhost:5000",
   "dependencies": {
     "axios": "^0.18.0",
