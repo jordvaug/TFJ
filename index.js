@@ -38,7 +38,7 @@ app.use("/api", apiRouter);
 
 //used for heroku
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "public", "index.html"));
+  res.sendFile(path.resolve(__dirname, "client/public", "index.html"));
 });
 
 app.listen(config.port, () => {
