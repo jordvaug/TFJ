@@ -29,7 +29,7 @@ class Signup extends Component {
       alert("Passwords don't match");
     } else {
       axios
-        .post("http://localhost:5000/api/users", qs.stringify(user), {
+        .post("http://localhost:5000/api/signup", qs.stringify(user), {
           headers: {
             "Content-type": "application/x-www-form-urlencoded",
             "Access-Control-Allow-Origin": "*"

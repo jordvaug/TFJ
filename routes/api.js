@@ -9,15 +9,9 @@ apiRouter.get("/", (req, res) => {
 });
 
 apiRouter
-  .route("/users")
-
-  //middleware for all "/users" requests
-  .all((req, res, next) => {
-    next();
-  })
+  .route("/signup")
 
   //create a new user
-  //password is being saved as null, this is an error
   .post((req, res) => {
     var user = new User(req.body);
     user.save(err => {
@@ -30,27 +24,8 @@ apiRouter
         }
       } else return res.status(200);
     });
-  })
-
-  //get all users
-  .get((req, res) => {
-    User.find({}, "name email").then(data => res.json(data));
   });
 
-//update a user by email
-apiRouter.put("/user:email", (req, res) => {
-  var user = new User();
-
-  user.findByIdAndUpdate(
-    req.params.user._id,
-    req.body,
-    { new: true },
-    (err, user) => {
-      if (err) return res.status(500).send(err);
-      res.json(user);
-    }
-  );
-});
 apiRouter.post("/login", (req, res) => {
   var user = new User(req.body);
   var password = req.body.password;
@@ -81,18 +56,18 @@ apiRouter.post("/login", (req, res) => {
           if (err) throw err;
           console.log(isMatch);
           if (isMatch) {
-            console.log("user is good");
             //generate jwt for user
-            var token = auth.generateToken;
+            var token = auth.generateToken(user);
             res.json({
               success: true,
-              message: "Authentication succeeded."
+              message: "Authentication succeeded.",
+              token: token
             });
             return true;
           } else {
             res.json({
               success: false,
-              message: "Authentication failed."
+              message: "Authentication failed, bad password."
             });
             return false;
           }
@@ -100,6 +75,62 @@ apiRouter.post("/login", (req, res) => {
       });
     }
   });
+});
+
+//********************************************************* */
+// After signup and login, auth happens for all requests via jwt
+
+apiRouter.use((req, res, next) => {
+  //look for the token in request body, url params, and headers
+  var token =
+    req.body.token || req.query.token || req.headers["x-access-token"];
+
+  if (token) {
+    var authRes = auth.verifyToken(token);
+    //auth succeeded
+    if (authRes[1] === null) {
+      req.token = authRes[0];
+      next();
+    } else {
+      return res.status(403).send({
+        success: false,
+        message: "Token auth failed."
+      });
+    }
+  } else {
+    return res.status(403).send({
+      success: false,
+      message: "No token was provided"
+    });
+  }
+});
+
+apiRouter
+  .route("/users")
+
+  //middleware for all "/users" requests
+  .all((req, res, next) => {
+    next();
+  })
+
+  //get all users
+  .get((req, res) => {
+    User.find({}, "name email").then(data => res.json(data));
+  });
+
+//update a user by email
+apiRouter.put("/user:email", (req, res) => {
+  var user = new User();
+
+  user.findByIdAndUpdate(
+    req.params.user._id,
+    req.body,
+    { new: true },
+    (err, user) => {
+      if (err) return res.status(500).send(err);
+      res.json(user);
+    }
+  );
 });
 
 module.exports = apiRouter;
