@@ -21,7 +21,7 @@ class Login extends Component {
     };
 
     axios
-      .post("http://localhost:5000/api/login", qs.stringify(user), {
+      .post("/api/login", qs.stringify(user), {
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
           "Access-Control-Allow-Origin": "*"
