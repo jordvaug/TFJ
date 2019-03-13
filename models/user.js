@@ -37,10 +37,6 @@ const UserSchema = new mongoose.Schema({
   ]
 });
 
-UserSchema.virtual("userId").get(function() {
-  return this._id;
-});
-
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
   if (candidatePassword === this.password) return cb(null, true);
   return cb(null, false);

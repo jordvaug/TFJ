@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = {
-  generateToken,
-  verifyToken
+  generateToken
 };
 
 function generateToken(user) {
@@ -13,17 +12,7 @@ function generateToken(user) {
     },
     process.env.SECRET,
     {
-      expiresInMinutes: 1440 // expires in 24 hours
+      expiresIn: 1440 * 60 //meausured in seconds, updated from expiresInMinutes
     }
   );
-}
-
-function verifyToken(token) {
-  jwt.verify(token, process.env.SECRET, (err, decode) => {
-    if (err) {
-      return [null, err];
-    } else {
-      return [decoded, null];
-    }
-  });
 }

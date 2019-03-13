@@ -2,7 +2,9 @@ const express = require("express"),
   apiRouter = express.Router(),
   User = require("../models/user"),
   auth = require("../controllers/auth.controller"),
-  bcrypt = require("bcrypt-nodejs");
+  bcrypt = require("bcrypt-nodejs"),
+  jwt = require("express-jwt"),
+  validator = require("email-validator");
 
 apiRouter.get("/", (req, res) => {
   res.json({ message: "Welcome to TFJ" });
@@ -14,16 +16,24 @@ apiRouter
   //create a new user
   .post((req, res) => {
     var user = new User(req.body);
-    user.save(err => {
-      if (err) {
-        if (err.code === 11000) {
-          //duplicate entry
-          console.log("duplicate user...");
-          res.send(err);
-          return;
-        }
-      } else return res.status(200);
-    });
+
+    //validate the email is ok
+    if (validator.validate(user.email)) {
+      user.save(err => {
+        if (err) {
+          if (err.code === 11000) {
+            //duplicate entry
+            console.log("duplicate user...");
+            res.send(err);
+            return res.status(403);
+          } else res.status(403);
+        } else return res.status(200);
+      });
+    } else
+      res.json({
+        success: false,
+        message: "Email is not in the proper format."
+      });
   });
 
 apiRouter.post("/login", (req, res) => {
@@ -43,7 +53,6 @@ apiRouter.post("/login", (req, res) => {
         success: false,
         message: "No account is associated with this email."
       });
-      return;
     } else {
       //hash password
       bcrypt.hash(password, result.salt, null, function(err, passwordHash) {
@@ -63,13 +72,11 @@ apiRouter.post("/login", (req, res) => {
               message: "Authentication succeeded.",
               token: token
             });
-            return true;
           } else {
             res.json({
               success: false,
               message: "Authentication failed, bad password."
             });
-            return false;
           }
         });
       });
@@ -77,60 +84,70 @@ apiRouter.post("/login", (req, res) => {
   });
 });
 
-//********************************************************* */
-// After signup and login, auth happens for all requests via jwt
-
-apiRouter.use((req, res, next) => {
-  //look for the token in request body, url params, and headers
-  var token =
-    req.body.token || req.query.token || req.headers["x-access-token"];
-
-  if (token) {
-    var authRes = auth.verifyToken(token);
-    //auth succeeded
-    if (authRes[1] === null) {
-      req.token = authRes[0];
-      next();
-    } else {
-      return res.status(403).send({
-        success: false,
-        message: "Token auth failed."
-      });
-    }
-  } else {
-    return res.status(403).send({
-      success: false,
-      message: "No token was provided"
-    });
-  }
-});
-
 apiRouter
   .route("/users")
 
   //middleware for all "/users" requests
-  .all((req, res, next) => {
+  .all(jwt({ secret: process.env.SECRET }), (req, res, next) => {
     next();
   })
 
-  //get all users
+  //get all users, protect with jwt
   .get((req, res) => {
     User.find({}, "name email").then(data => res.json(data));
   });
 
-//update a user by email
-apiRouter.put("/user:email", (req, res) => {
-  var user = new User();
+apiRouter
+  .route("/user/:email")
 
-  user.findByIdAndUpdate(
-    req.params.user._id,
-    req.body,
-    { new: true },
-    (err, user) => {
+  //require token for all routes
+  .all(jwt({ secret: process.env.SECRET }), (req, res, next) => {
+    next();
+  })
+
+  //get the info for one user
+  .post((req, res) => {
+    User.findOne({ email: req.params.email }, (err, result) => {
       if (err) return res.status(500).send(err);
-      res.json(user);
-    }
-  );
-});
+
+      res.json(result);
+    });
+  })
+
+  //update a user's info
+  .put((req, res) => {
+    //(conditions, update statement, return modified doc)
+    User.findOneAndUpdate(
+      req.params.email,
+      req.body,
+      { new: true },
+      (err, user) => {
+        if (err) res.status(500).send(err);
+        res.json(user);
+      }
+    );
+  })
+
+  //delete a user
+  .delete((req, res) => {
+    console.log(req.param.email);
+    User.findOne(req.param.email, (err, result) => {
+      if (err) res.status(500).send(err);
+      if (result) {
+        User.findOneAndRemove({ _id: result._id }, err => {
+          if (err) res.status(500).send(err);
+          res.json({
+            success: true,
+            message: "User was delete."
+          });
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "No matching user found."
+        });
+      }
+    });
+  });
 
 module.exports = apiRouter;
