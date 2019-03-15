@@ -37,9 +37,7 @@ function AppRouter(props) {
               </li>
               <li className="nav-item active">
                 <div className="nav-link">
-                  {!auth.isAuthenticated() && (
-                    <Link to="/signup/">Sign Up</Link>
-                  )}
+                  <Link to="/signup/">Sign Up</Link>
                 </div>
               </li>
               <li className="nav-item active">
