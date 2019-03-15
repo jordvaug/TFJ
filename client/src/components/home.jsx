@@ -1,14 +1,20 @@
 import React, { Component } from "react";
 import axios from "axios";
+import auth from "../Auth";
+import "../style/style.css";
 
 class Home extends Component {
   state = {
     users: []
   };
 
+  //I use a local storage approach, which is vulnerable to XSS, but XSS must be secured against anyway and the cookies is temporary
   componentDidMount() {
+    axios.defaults.headers.common["Authorization"] =
+      "Bearer " + auth.getToken();
+    console.log(auth.token);
     axios
-      .get(`http://localhost:5000/api/users`, {
+      .get(`/api/users`, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Accept: "application/json"

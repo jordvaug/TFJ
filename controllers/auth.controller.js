@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+//https://jwt.io/
 
 module.exports = {
   generateToken

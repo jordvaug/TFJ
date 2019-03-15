@@ -1,0 +1,65 @@
+.container {
+  background-color: #54bde8;
+}
+
+.climbsContainer {
+  background-color: #52acad;
+  position: relative;
+  min-width: 250px;
+  max-width: 250px;
+  min-height: 100vh;
+  height: 75%;
+  overflow: scroll;
+}
+
+#sidebarCollapse {
+  width: 40px;
+  height: 40px;
+  background: #52acad;
+  border: none;
+}
+#sidebarCollapse span {
+  width: 80%;
+  height: 2px;
+  margin: 0 auto;
+  display: block;
+  background: black;
+  transition: all 0.8s cubic-bezier(0.81, -0.33, 0.345, 1.375);
+}
+#sidebarCollapse span:first-of-type {
+  /* rotate first one */
+  transform: rotate(45deg) translate(2px, 2px);
+}
+#sidebarCollapse span:nth-of-type(2) {
+  /* second one is not visible */
+  opacity: 0;
+}
+#sidebarCollapse span:last-of-type {
+  /* rotate third one */
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+#sidebarCollapse.active span {
+  /* no rotation */
+  transform: none;
+  /* all bars are visible */
+  opacity: 1;
+  margin: 5px auto;
+}
+
+.customButton {
+  width: 250px;
+  padding: 3px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  text-align: left;
+  background-color: #333;
+  border-color: #333;
+  border: none;
+}
+.customButton:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}

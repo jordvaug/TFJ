@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import "../style/style.css";
 import qs from "qs";
 
 class Signup extends Component {
@@ -7,7 +8,8 @@ class Signup extends Component {
     name: "",
     email: "",
     password: "",
-    cpassword: ""
+    cpassword: "",
+    nameError: ""
   };
 
   handleChange = event => {
@@ -81,6 +83,7 @@ class Signup extends Component {
                   value={this.state.name}
                   onChange={this.handleChange}
                 />
+                {this.state.nameError && <div>{this.state.nameError}</div>}
               </div>
               <div className="form-group input-group">
                 <div className="input-group-prepend">

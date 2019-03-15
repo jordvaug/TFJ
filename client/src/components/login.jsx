@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
 import qs from "qs";
+import "../style/style.css";
 
 class Login extends Component {
   state = {
     email: "",
-    password: ""
+    password: "",
+    token: ""
   };
 
   handleChange = event => {
@@ -28,7 +30,11 @@ class Login extends Component {
         }
       })
       .then(res => {
-        console.log(res);
+        if (res.data.token) {
+          this.setState({ token: res.data.token });
+          localStorage.setItem("TFJtoken", this.state.token);
+          this.props.history.push("/home");
+        } else alert("Sign in failed.");
       });
   };
 
@@ -78,7 +84,7 @@ class Login extends Component {
                 </button>
               </div>
               <p className="text-center">
-                Don't have an account? <a href="">Sign Up</a>{" "}
+                Don't have an account? <a href="#">Sign Up</a>{" "}
               </p>
             </form>
           </article>
