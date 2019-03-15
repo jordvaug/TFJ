@@ -10,21 +10,24 @@ class Home extends Component {
 
   //I use a local storage approach, which is vulnerable to XSS, but XSS must be secured against anyway and the cookies is temporary
   componentDidMount() {
-    axios.defaults.headers.common["Authorization"] =
-      "Bearer " + auth.getToken();
-    console.log(auth.token);
-    axios
-      .get(`/api/users`, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json"
-        }
-      })
-      .then(res => {
-        const users = res.data;
-        this.setState({ users });
-      })
-      .catch(err => console.log(err));
+    if (!auth.isAuthenticated()) this.props.history.push("/login");
+    else {
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + auth.getToken();
+
+      axios
+        .get(`/api/users`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json"
+          }
+        })
+        .then(res => {
+          const users = res.data;
+          this.setState({ users });
+        })
+        .catch(err => console.log(err));
+    }
   }
 
   render() {

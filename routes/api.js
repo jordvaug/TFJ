@@ -206,7 +206,7 @@ maxDiff - Max difficulty of routes to return, e.g. 5.10a or V2.
 */
 apiRouter
   .route("/mtp/routes")
-  .post(jwt({ secret: process.env.SECRET }), (req, res) => {
+  .post(jwt({ secret: process.env.SECRET }), cache(10), (req, res) => {
     var lat = req.body.lat;
     var long = req.body.long;
     var minDiff = null;

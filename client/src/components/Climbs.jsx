@@ -8,8 +8,7 @@ class Climbs extends Component {
   state = { climbs: [], showResults: false };
 
   onClickHandler = () => {
-    if (this.state.showResults) this.setState({ showResults: false });
-    this.setState({ showResults: true });
+    this.setState({ showResults: !this.state.showResults });
   };
 
   componentDidMount() {
@@ -45,6 +44,7 @@ class Climbs extends Component {
             ? this.state.climbs.map(climb => (
                 <ul>
                   <li>
+                    <img src={climb.imgSmall} alt="Logo" /> <br />
                     {climb.name}: {climb.rating}
                   </li>
                 </ul>

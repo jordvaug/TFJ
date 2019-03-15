@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
 import "../style/style.css";
 import qs from "qs";
 
@@ -38,7 +39,8 @@ class Signup extends Component {
           }
         })
         .then(res => {
-          console.log(res);
+          if (res.data.success) this.props.history.push("/home");
+          else alert("Sign up failed");
         });
     }
   };
@@ -148,4 +150,4 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+export default withRouter(Signup);
