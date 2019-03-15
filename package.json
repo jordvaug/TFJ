@@ -2,7 +2,7 @@
   "name": "TFJ",
   "version": "1.0.0",
   "description": "MERN app for climbers",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
     "start": "node server.js",
@@ -12,7 +12,7 @@
   "engines": {
     "node": "10.15.3"
   },
-  "author": "Ojini Jude",
+  "author": "Jordan Vaughn",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
