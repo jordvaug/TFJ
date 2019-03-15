@@ -21,7 +21,7 @@ function AppRouter(props) {
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
               <div className="nav-link">
-                {auth.isAuthenticated() && <Link to="/home/"> Home</Link>}
+                <Link to="/home/"> Home</Link>
               </div>
             </li>
             <li className="nav-item active">
